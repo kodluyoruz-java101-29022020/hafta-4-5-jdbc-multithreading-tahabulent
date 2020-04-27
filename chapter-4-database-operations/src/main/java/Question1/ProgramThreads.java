@@ -28,10 +28,12 @@ public class ProgramThreads implements Runnable {
 	@Override
 	public void run() {
 		try {
+
 			synchronized (ciftSayi) {
 
 				for (Integer item : arrayList) {
 					if (item % 2 == 0) {
+
 						this.ciftSayi.add(item);
 					}
 				}

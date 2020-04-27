@@ -9,33 +9,67 @@ import org.apache.log4j.Logger;
 import db.connection.mysql.connection.DbSQLQuery;
 import db.connection.mysql.connection.model.Department;
 
-
 public class DepartmentDAO {
 
 	private static final Logger logger = Logger.getLogger(DepartmentDAO.class);
 
-	
 	public List<Department> getAll() {
-		
+
 		List<Department> departments = new ArrayList<Department>();
-		
-		// TÃ¼m departman listesini Ã§eken SQL komutunu aÅŸaÄŸÄ±daki satÄ±ra yazÄ±nÄ±z.
-		ResultSet resultSet = DbSQLQuery.select("<Bu SQL sorgusunu oluÅŸtur>");
-		
+
+		// Tüm departman listesini çeken SQL komutunu aşağıdaki satıra yazınız.
+		ResultSet resultSet = DbSQLQuery.select("SELECT * FROM departments");
+
 		try {
-			
-			// ResultSet iÃ§inde veritabanÄ±ndan gelen department kayÄ±tlarÄ± var.
-			// ResultSet Ã¼zerinde satÄ±r satÄ±r ilerleyerek bir Department listesi oluÅŸtur.
-			// List<Department> departments bu listeye elemanlarÄ± ekleyeceksiniz.
-			
+
+			if (resultSet == null) {
+				return departments;
+			}
+
+			while (resultSet.next()) {
+
+				Department department_temp = new Department(resultSet.getString("deptNo"), resultSet.getString("name"));
+
+				departments.add(department_temp);
+
+			}
+			// ResultSet içinde veritabanından gelen department kayıtları var.
+			// ResultSet üzerinde satır satır ilerleyerek bir Department listesi oluştur.
+			// List<Department> departments bu listeye elemanları ekleyeceksiniz.
+
 			// Kodlar ... :)
-			
-		}
-		catch (Exception e) {
+			return departments;
+
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		
+
 		return departments;
+
 	}
-	
+
+	// Id ye göre departman No'sunu veren Fonksiyon
+
+	public List<String> getDepartments(Long emp_no) {
+
+		String sql = "SELECT dp.dept_name FROM dept_emp d INNER JOIN departments dp ON d.dept_no=dp.dept_no WHERE emp_no="
+				+ emp_no;
+		ResultSet resultSet = DbSQLQuery.select(sql);
+
+		List<String> departments = new ArrayList<String>();
+
+		try {
+
+			while (resultSet.next()) {
+
+				departments.add(resultSet.getString("dept_name"));
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return departments;
+
+	}
+
 }
